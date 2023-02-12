@@ -28,18 +28,25 @@ int ConvertCharToDec(const char& val, const int& numSystem, bool& wasError)
 	return result;
 }
 
-int StringToInt(const std::string& str, int radix, bool& wasError)
+int StringToInt(const std::string& str, int radix, bool& wasError, bool& isNegative)
 {
 	int result = 0;
 	const int intMaxValue = std::numeric_limits<int>::max();
-	for (size_t i = 0; i < str.length(); i++)
+	int startValue = 0;
+	const char minus = *"-";
+	if (str[0] == minus)
+	{
+		isNegative = 1;
+		startValue = 1;
+	}
+	for (size_t i = startValue; i < str.length(); i++)
 	{
 		int val = ConvertCharToDec(str[i], radix, wasError);
 		if (wasError)
 		{
 			return result;
 		}
-		if (result <= ((intMaxValue / radix) - val))
+		if (result <= ((intMaxValue - val) / radix))
 		{
 			result *= radix;
 			result += val;
@@ -74,7 +81,8 @@ int main(int argc, char* argv[])
 	}
 	const std::string value = argv[3];
 	bool wasError = 0;
-	int dec = StringToInt(value, sourceNotation, wasError);
+	bool isNegative = 0;
+	int dec = StringToInt(value, sourceNotation, wasError, isNegative);
 	if (wasError)
 	{
 		std::cout << "An error occurred while executing the program!\n";
@@ -87,6 +95,10 @@ int main(int argc, char* argv[])
 	{
 		std::cout << "Error!\n";
 		return 1;
+	}
+	if (isNegative)
+	{
+		std::cout << "-";
 	}
 	printf("%s\n", buffer);
 	return 0;
