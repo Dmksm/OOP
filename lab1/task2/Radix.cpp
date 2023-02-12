@@ -22,9 +22,7 @@ int main(int argc, char* argv[])
 	if (!checkInAvailableRange(sourceNotation, minNumberSystem, maxNumberSystem) ||
 		!checkInAvailableRange(destinationNotation, minNumberSystem, maxNumberSystem))
 	{
-		std::cout << "Error! " << sourceNotation << " and " << destinationNotation <<
-			" must be between " << minNumberSystem << " and " << maxNumberSystem << " !\n";
-		std::cout << "Error! " << minNumberSystem <= sourceNotation << " and " << minNumberSystem <= destinationNotation << " must be between " << minNumberSystem << " and " << maxNumberSystem << " !\n";
+		std::cout << "! " << (minNumberSystem <= sourceNotation) << " and " << (minNumberSystem <= destinationNotation) << " must be between " << minNumberSystem << " and " << maxNumberSystem << " !\n";
 		return 1;
 	}
 	return 0;
