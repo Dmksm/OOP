@@ -1,9 +1,56 @@
-﻿#include <iostream>
+﻿#define _OPEN_SYS_ITOA_EXT
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <limits>
 
-bool checkInAvailableRange(const int& numberSystem, const int& min,
+bool CheckInAvailableRange(const int& num, const int& min,
 	const int& max)
 {
-	return ((min <= numberSystem) && (numberSystem <= max));
+	return ((min <= num) && (num <= max));
+}
+
+int ConvertCharToDec(const char& val, const int& numSystem, bool& wasError)
+{
+	int codeDiffValue = 55;
+	if (std::isdigit(val))
+	{
+		codeDiffValue = 48;
+	}
+	const int result = (int)val - codeDiffValue;
+	const int minResult = 0;
+	const int maxResult = numSystem - 1;
+	if (!CheckInAvailableRange(result, minResult, maxResult))
+	{
+		wasError = 1;
+	}
+	return result;
+}
+
+int StringToInt(const std::string& str, int radix, bool& wasError)
+{
+	int result = 0;
+	const int intMaxValue = std::numeric_limits<int>::max();
+	for (size_t i = 0; i < str.length(); i++)
+	{
+		int val = ConvertCharToDec(str[i], radix, wasError);
+		if (wasError)
+		{
+			return result;
+		}
+		if (result <= ((intMaxValue / radix) - val))
+		{
+			result *= radix;
+			result += val;
+		}
+		else
+		{
+			wasError = 1;
+			break;
+		}
+	}
+	return result;
 }
 
 int main(int argc, char* argv[])
@@ -16,14 +63,31 @@ int main(int argc, char* argv[])
 	}
 	const int sourceNotation = atoi(argv[1]);
 	const int destinationNotation = atoi(argv[2]);
-	const int value = atoi(argv[3]);
 	const int minNumberSystem = 2;
 	const int maxNumberSystem = 36;
-	if (!checkInAvailableRange(sourceNotation, minNumberSystem, maxNumberSystem) ||
-		!checkInAvailableRange(destinationNotation, minNumberSystem, maxNumberSystem))
+	if (!CheckInAvailableRange(sourceNotation, minNumberSystem, maxNumberSystem) ||
+		!CheckInAvailableRange(destinationNotation, minNumberSystem, maxNumberSystem))
 	{
-		std::cout << "! " << (minNumberSystem <= sourceNotation) << " and " << (minNumberSystem <= destinationNotation) << " must be between " << minNumberSystem << " and " << maxNumberSystem << " !\n";
+		std::cout << "Error! " << sourceNotation << " and " << destinationNotation <<
+			" must be between " << minNumberSystem << " and " << maxNumberSystem << " !\n";
+		return 1;	
+	}
+	const std::string value = argv[3];
+	bool wasError = 0;
+	int dec = StringToInt(value, sourceNotation, wasError);
+	if (wasError)
+	{
+		std::cout << "An error occurred while executing the program!\n";
 		return 1;
 	}
+	const int bufferSize = sizeof(int) * 8 + 1;
+	char buffer[bufferSize];
+	errno_t errorCode = _itoa_s(dec, buffer, destinationNotation);
+	if (errorCode != 0)
+	{
+		std::cout << "Error!\n";
+		return 1;
+	}
+	printf("%s\n", buffer);
 	return 0;
 }
