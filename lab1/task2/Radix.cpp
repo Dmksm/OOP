@@ -1,105 +1,172 @@
-﻿#define _OPEN_SYS_ITOA_EXT
-#include <iostream>
+﻿#include <iostream>
 #include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
 #include <limits>
+#include <algorithm>
+#include <math.h>
 
-bool CheckInAvailableRange(const int& num, const int& min,
-	const int& max)
+bool CheckInAvailableRange(int num)
 {
-	return ((min <= num) && (num <= max));
+	const int minNumberSystem = 2;
+	const int maxNumberSystem = 36;
+	bool isNumberInRange = ((minNumberSystem <= num) && (num <= maxNumberSystem));
+	if (!isNumberInRange)
+	{
+		std::cout << "Error! " << num << " must be between " << minNumberSystem 
+			<< " and " << maxNumberSystem << " !\n";
+	}
+	return isNumberInRange;
 }
 
-int ConvertCharToDec(const char& val, const int& numSystem, bool& wasError)
+int ConvertCharToDec(char ch, int radix, bool& wasError)
 {
-	int codeDiffValue = 55;
-	if (std::isdigit(val))
+	const int diffForChar = 55;
+	const int diffForDigit = '0';
+	int dec = ch;
+	if (std::isdigit(ch))
 	{
-		codeDiffValue = 48;
+		dec -= diffForDigit;
 	}
-	const int result = (int)val - codeDiffValue;
-	const int minResult = 0;
-	const int maxResult = numSystem - 1;
-	if (!CheckInAvailableRange(result, minResult, maxResult))
+	else
 	{
-		wasError = 1;
+		dec -= diffForChar;
 	}
-	return result;
+	const int minDecValue = 0;
+	const int maxDecValue = radix - 1;
+	wasError = (dec > maxDecValue) || (dec < minDecValue);
+	return dec;
 }
 
-int StringToInt(const std::string& str, int radix, bool& wasError, bool& isNegative)
+bool CheckIntOverflow(int intValue, int addedValue, int radix)
 {
-	int result = 0;
-	const int intMaxValue = std::numeric_limits<int>::max();
-	int startValue = 0;
+	const int intMaxLimit = std::numeric_limits<int>::max();
+	const int intMinLimit = std::numeric_limits<int>::min();
+	return (intValue > ((intMaxLimit - addedValue) / radix)) ||
+		(intValue < ((intMinLimit + addedValue) / radix));
+}
+
+int StringToInt(const std::string& str, int radix, bool& wasError)
+{
+	const int firstElem = 0;
+	int startStringElement = firstElem;
 	const char minus = *"-";
-	if (str[0] == minus)
+	const bool isNegative = str[0] == minus;
+	if (isNegative)
 	{
-		isNegative = 1;
-		startValue = 1;
+		const int secondElem = 1;
+		startStringElement = secondElem;
 	}
-	for (size_t i = startValue; i < str.length(); i++)
+	int resultInt = 0;
+	
+	for (size_t i = startStringElement; i < str.length(); i++)
 	{
-		int val = ConvertCharToDec(str[i], radix, wasError);
+		int dec = ConvertCharToDec(str[i], radix, wasError);
+		wasError = wasError || (CheckIntOverflow(resultInt, dec, radix));
 		if (wasError)
 		{
-			return result;
+			return resultInt;
 		}
-		if (result <= ((intMaxValue - val) / radix))
+		resultInt *= radix;
+		if (isNegative)
 		{
-			result *= radix;
-			result += val;
+			resultInt -= dec;
 		}
 		else
 		{
-			wasError = 1;
-			break;
-		}
+			resultInt += dec;
+		}	
 	}
-	return result;
+	
+	return resultInt;
+}
+
+bool CheckParametersNumberPassed(int parametersNumber)
+{
+	const int expectedParametersNumber = 4;
+	if (parametersNumber != expectedParametersNumber)
+	{
+		std::cout << "The number of parameters must be " <<
+			expectedParametersNumber << " !\n";
+		return true;
+	}
+	return false;
+}
+
+char ConvertIntToChar(int number)
+{
+	const int maxDecDigit = 9;
+	const int diffForChar = 55;
+	if (number > maxDecDigit)
+	{
+		return number + diffForChar;
+	}
+	const int diffCodeForDigit = '0';
+	return number + '0';
+}
+
+std::string IntToString(int n, int radix, bool& wasError)
+{
+	const int zero = 0;
+	unsigned int number = n;
+	const bool isNegative = n < zero;
+	if (isNegative)
+	{
+		number = abs(n);
+	}
+	std::string resultString = "";
+	int excess;
+	while (number > radix)
+	{  
+		excess = number % radix;
+		number /= radix;
+		resultString += ConvertIntToChar(excess);
+	}
+	resultString += number + '0';
+	if (isNegative)
+	{
+		const char minus = '-';
+		resultString += minus;
+	}
+	std::reverse(resultString.begin(), resultString.end());
+	return resultString;
+}
+
+void ConvertValueFromSourceToDestination(const std::string& value, int sourceNotation,
+	int destinationNotation, bool& wasError)
+{
+	int dec = StringToInt(value, sourceNotation, wasError);
+	if (wasError)
+	{
+		std::cout << "An error occurred while string to int conversion!\n";
+		return;
+	}
+	std::string resultString = IntToString(dec, destinationNotation, wasError);
+	if (wasError)
+	{
+		std::cout << "An error occurred while int to string conversion!\n";
+		return;
+	}
+	std::cout << resultString << "\n";
 }
 
 int main(int argc, char* argv[])
 {
-	const int parametersNumber = 4;
-	if (argc != parametersNumber)
+	if (CheckParametersNumberPassed(argc))
 	{
-		std::cout << "The number of parameters must be " << parametersNumber << " !\n";
 		return 1;
 	}
+	bool wasError = 0;
 	const int sourceNotation = atoi(argv[1]);
 	const int destinationNotation = atoi(argv[2]);
-	const int minNumberSystem = 2;
-	const int maxNumberSystem = 36;
-	if (!CheckInAvailableRange(sourceNotation, minNumberSystem, maxNumberSystem) ||
-		!CheckInAvailableRange(destinationNotation, minNumberSystem, maxNumberSystem))
+	if (!CheckInAvailableRange(sourceNotation) ||
+		!CheckInAvailableRange(destinationNotation))
 	{
-		std::cout << "Error! " << sourceNotation << " and " << destinationNotation <<
-			" must be between " << minNumberSystem << " and " << maxNumberSystem << " !\n";
-		return 1;	
+		return 2;
 	}
-	const std::string value = argv[3];
-	bool wasError = 0;
-	bool isNegative = 0;
-	int dec = StringToInt(value, sourceNotation, wasError, isNegative);
+	ConvertValueFromSourceToDestination(argv[3], sourceNotation,
+		destinationNotation, wasError);
 	if (wasError)
 	{
-		std::cout << "An error occurred while executing the program!\n";
-		return 1;
+		return 3;
 	}
-	const int bufferSize = sizeof(int) * 8 + 1;
-	char buffer[bufferSize];
-	errno_t errorCode = _itoa_s(dec, buffer, destinationNotation);
-	if (errorCode != 0)
-	{
-		std::cout << "Error!\n";
-		return 1;
-	}
-	if (isNegative)
-	{
-		std::cout << "-";
-	}
-	printf("%s\n", buffer);
 	return 0;
-}
+} 
