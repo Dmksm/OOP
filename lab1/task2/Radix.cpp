@@ -73,7 +73,7 @@ int StringToInt(const std::string& str, int radix, bool& wasError)
 		else
 		{
 			resultInt += dec;
-		}	
+		}
 	}
 	
 	return resultInt;
@@ -100,7 +100,7 @@ char ConvertIntToChar(int number)
 		return number + diffForChar;
 	}
 	const int diffCodeForDigit = '0';
-	return number + '0';
+	return number + diffCodeForDigit;
 }
 
 std::string IntToString(int n, int radix, bool& wasError)
@@ -114,13 +114,13 @@ std::string IntToString(int n, int radix, bool& wasError)
 	}
 	std::string resultString = "";
 	int excess;
-	while (number > radix)
+	while (number >= radix)
 	{  
 		excess = number % radix;
 		number /= radix;
 		resultString += ConvertIntToChar(excess);
 	}
-	resultString += number + '0';
+	resultString += ConvertIntToChar(number);
 	if (isNegative)
 	{
 		const char minus = '-';
