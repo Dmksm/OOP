@@ -3,42 +3,79 @@
 #include <fstream>
 #include <regex>
 
+void ReplaceSubstring(std::string &line, const std::string &searchString,
+	const std::string &replacementString)
+{
+	const int minSearchStringLength = 1;
+	const size_t searchStringLength = searchString.length();
+	if (searchStringLength >= minSearchStringLength)
+	{
+		size_t pos = line.find(searchString);
+		const size_t notFound = std::string::npos;
+		while (pos != notFound)
+		{
+			line.replace(pos, searchStringLength, replacementString);
+			pos = line.find(searchString);
+		}
+	}
+}
+
 void CopyStreamWithReplacement(std::istream& input, std::ostream& output,
 	const std::string& searchString, const std::string& replacementString)
 {
 	std::string line;
-	const int minSearchStringLength = 1;
 	while (getline(input, line))
 	{
-		if (searchString.length() >= minSearchStringLength)
-		{
-			line = std::regex_replace(line, std::regex(searchString), replacementString);
-		}
+		ReplaceSubstring(line, searchString, replacementString);
 		output << line << std::endl;
 	}
 }
 
-int main(int argc, char* argv[])
+void CloseFiles(std::ifstream &inputFile, std::ofstream &outputFile)
+{
+	inputFile.close();
+	outputFile.close();
+}
+
+bool CheckInputParametersNumber(int paramNumber)
 {
 	const int parametersNumber = 5;
-	if (argc != parametersNumber)
+	if (paramNumber != parametersNumber)
 	{
 		std::cout << "The number of parameters must be " << parametersNumber << " !\n";
+		return false;
+	}
+	return true;
+}
+
+bool CheckOpenFile(std::ifstream &file, const std::string &fileName)
+{
+	if (!file.is_open())
+	{
+		std::cout << "Unable to open " << fileName << " file!\n";
+		return false;
+	}
+	return true;
+}
+
+int main(int argc, char* argv[])
+{
+	if (!CheckInputParametersNumber(argc))
+	{
 		return 1;
 	}
 	const std::string inputFileName = argv[1];
+	std::ifstream inputFile(inputFileName);
+	if (!CheckOpenFile(inputFile, inputFileName))
+	{
+		return 2;
+	}
 	const std::string outputFileName = argv[2];
+	std::ofstream outputFile(outputFileName);
 	const std::string searchString = argv[3];
 	const std::string replacementString = argv[4];
-	std::ifstream inputFile(inputFileName);
-	std::ofstream outputFile(outputFileName);
-	if (!inputFile.is_open() || !outputFile.is_open())
-	{
-		std::cout << "Unable to open " << inputFileName << " or " << outputFileName <<
-			" file!\n";
-		return 1;
-	}
+
 	CopyStreamWithReplacement(inputFile, outputFile, searchString, replacementString);
-	outputFile.flush();
+	CloseFiles(inputFile, outputFile);
 	return 0;
 }
