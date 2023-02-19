@@ -1,7 +1,6 @@
 ﻿#include <iostream>
 #include <string>
 #include <fstream>
-#include <regex>
 
 void ReplaceSubstring(std::string &line, const std::string &searchString,
 	const std::string &replacementString)
