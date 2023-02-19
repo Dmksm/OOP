@@ -132,7 +132,6 @@ bool GetLabyrinth(std::ifstream& input, std::vector<std::vector<FieldCell>>& lab
 			return false;
 		}
 	}
-
 	if (!CheckStartAndEndPointNumbers(startPointsNumber, finishPointsNumber))
 	{
 		return false;
