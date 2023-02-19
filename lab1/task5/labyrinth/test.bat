@@ -7,24 +7,25 @@ if NOT ERRORLEVEL 1 goto err
 %PROGRAM% test-data\empty-labyrinth.txt "%TEMP%\labyrinth-out.txt" > nul
 if NOT ERRORLEVEL 1 goto err
 
-%PROGRAM% test-data\no-labyrinth.txt "%TEMP%\labyrinth-out.txt" > nul
-if ERRORLEVEL 1 goto err
-fc.exe "%TEMP%\labyrinth-out.txt" test-data\no-labyrinth-without-way.txt
-if ERRORLEVEL 1 goto err
-
-%PROGRAM% test-data\labyrinth-standard.txt "%TEMP%\labyrinth-out.txt" > nul
-if ERRORLEVEL 1 goto err
-fc.exe "%TEMP%\labyrinth-out.txt" test-data\labyrinth-standard-with-way.txt 
-if ERRORLEVEL 1 goto err
 
 %PROGRAM% test-data\labyrinth-with-big-distance.txt "%TEMP%\labyrinth-out.txt" > nul
 if ERRORLEVEL 1 goto err
-fc.exe "%TEMP%\labyrinth-out.txt" test-data\labyrinth-with-long-way.txt >nul
+fc.exe "%TEMP%\labyrinth-out.txt" test-data\labyrinth-with-long-way.txt > nul
 if ERRORLEVEL 1 goto err
 
 %PROGRAM% test-data\labyrinth-105x105-and-no-way.txt "%TEMP%\labyrinth-out.txt" > nul
 if ERRORLEVEL 1 goto err
-fc.exe "%TEMP%\labyrinth-out.txt" test-data\labyrinth-100x100-without-way.txt >nul
+fc.exe "%TEMP%\labyrinth-out.txt" test-data\labyrinth-100x100-without-way.txt > nul
+if ERRORLEVEL 1 goto err
+
+%PROGRAM% test-data\labyrinth-standard.txt "%TEMP%\labyrinth-out.txt" > nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\labyrinth-out.txt" test-data\labyrinth-standard-with-way.txt > nul
+if ERRORLEVEL 1 goto err
+
+%PROGRAM% test-data\no-labyrinth.txt "%TEMP%\labyrinth-out.txt" > nul
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\labyrinth-out.txt" test-data\no-labyrinth-without-way.txt > nul
 if ERRORLEVEL 1 goto err
 
 echo OK
