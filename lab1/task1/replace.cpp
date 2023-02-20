@@ -19,7 +19,7 @@ void ReplaceSubstring(std::string &line, const std::string &searchString,
 	}
 }
 
-void CopyStreamWithReplacement(std::istream& input, std::ostream& output,
+void CopyStreamWithReplacement(std::ifstream& input, std::ostream& output,
 	const std::string& searchString, const std::string& replacementString)
 {
 	std::string line;
@@ -28,12 +28,6 @@ void CopyStreamWithReplacement(std::istream& input, std::ostream& output,
 		ReplaceSubstring(line, searchString, replacementString);
 		output << line << std::endl;
 	}
-}
-
-void CloseFiles(std::ifstream &inputFile, std::ofstream &outputFile)
-{
-	inputFile.close();
-	outputFile.close();
 }
 
 bool CheckInputParametersNumber(int paramNumber)
@@ -75,6 +69,5 @@ int main(int argc, char* argv[])
 	const std::string replacementString = argv[4];
 
 	CopyStreamWithReplacement(inputFile, outputFile, searchString, replacementString);
-	CloseFiles(inputFile, outputFile);
 	return 0;
 }
