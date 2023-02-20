@@ -86,9 +86,9 @@ bool CheckParametersNumberPassed(int parametersNumber)
 	{
 		std::cout << "The number of parameters must be " <<
 			expectedParametersNumber << " !\n";
-		return true;
+		return false;
 	}
-	return false;
+	return true;
 }
 
 char ConvertIntToChar(int number)
@@ -150,7 +150,7 @@ void ConvertValueFromSourceToDestination(const std::string& value, int sourceNot
 
 int main(int argc, char* argv[])
 {
-	if (CheckParametersNumberPassed(argc))
+	if (!CheckParametersNumberPassed(argc))
 	{
 		return 1;
 	}
