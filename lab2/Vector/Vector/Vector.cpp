@@ -44,4 +44,5 @@ int main()
     HandleVector(vector, min);
     SortInAscendingOrder(vector);
     PrintVector(vector, std::cout);
+	return 0;
 }
