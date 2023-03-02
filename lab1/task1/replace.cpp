@@ -4,16 +4,16 @@
 
 std::string ReplaceSubstring(const std::string &line, const std::string &searchString,
 	const std::string &replacementString)
-{
+{//переменные как можно ближе к их , использовать метод empty для строк, не выносить в переменную что имеется у строки string.length();
 	const int minSearchStringLength = 1;
 	const size_t searchStringLength = searchString.length();
-	std::string resultString = line;
+	std::string resultString = line; // лучше не тратить много ресурсов на 
 	if (searchStringLength >= minSearchStringLength)
 	{
-		const size_t notFound = std::string::npos;
+		const size_t notFound = std::string::npos; // не нужно констану , для нуля тоже нет смысла кнстанту 
 		const size_t startPos = 0;
-		const std::string emptyValue = "";
-		resultString = emptyValue;
+		const std::string emptyValue = "";//по умолчанию пустая строка поэтому убраить 
+		resultString = emptyValue; // убрать предыдущее действие 
 		size_t pos = startPos;
 		
 		while (pos < line.length())
@@ -44,7 +44,7 @@ void CopyStreamWithReplacement(std::istream& input, std::ostream& output,
 		output << ReplaceSubstring(line, searchString, replacementString) << std::endl;
 	}
 }
-//проверить на милионе символов за сек
+
 bool CheckInputParametersNumber(int paramNumber)
 {
 	const int parametersNumber = 5;
@@ -65,7 +65,7 @@ bool CheckOpenFile(std::ifstream &file, const std::string &fileName)
 	}
 	return true;
 }
-//параметры закинуть в опциональную структуру на гит хабе есть , и вернуть или ошибку или готовые файлы
+
 int main(int argc, char* argv[])
 {
 	if (!CheckInputParametersNumber(argc))
