@@ -52,7 +52,7 @@ bool CheckOnAvailableSymbol(char symbol, int& startPositionCount,
 	const char startPoint = 'A';
 	const char finishPoint = 'B';
 	const char way = ' ';
-	const char wall = '#';
+	const char wall = '#'; //если используется в разных функциях выносить в глобальную обсласть
 	if ((symbol != startPoint) && (symbol != finishPoint) && (symbol != way) &&
 		(symbol != wall))
 	{
@@ -74,7 +74,7 @@ bool CheckOnAvailableSymbol(char symbol, int& startPositionCount,
 }
 
 bool CharacterAddition(std::vector<std::vector<FieldCell>>& labyrinth, const std::string& line,
-	int currLine, int& startPointsNumber, int& finishPointsNumber, Position& startPosition)
+	int currLine, int& startPointsNumber, int& finishPointsNumber, Position& startPosition) //переназвать на добавление линии вместо currLine line index
 {
 	int availableLength = line.length();
 	if (availableLength > rows)
@@ -232,10 +232,14 @@ void FindAndAddWay(std::vector<std::vector<FieldCell>>& labyrinth,
 	const int startMark = 0;
 	int mark = startMark;
 	labyrinth[startPosition.column][startPosition.row].mark = mark;
+	
+	//больще разделений на смысловые части
 	std::queue<Position> queue;
 	queue.push(startPosition);
+
 	FieldCell cell;
 	Position pos;
+
 	while (!queue.empty())
 	{
 		pos = queue.front();
@@ -246,10 +250,12 @@ void FindAndAddWay(std::vector<std::vector<FieldCell>>& labyrinth,
 		}
 		MoveQueue(labyrinth, pos, queue, mark);
 	}
-	if (labyrinth[pos.column][pos.row].symbol != finishSymbol)
+
+	if (labyrinth[pos.column][pos.row].symbol != finishSymbol) 
 	{
 		return;
 	}
+	//разделеть на поиск и метку пути
 	while (mark != startMark)
 	{
 		RestoreWay(labyrinth, pos, mark);
@@ -283,7 +289,7 @@ int main(int argc, char* argv[])
 	{
 		return 3;
 	}
-	FindAndAddWay(labyrinth, startPosition);
+	FindAndAddWay(labyrinth, startPosition); //пометить вместо добавить потому что при чтении add подразумевает куда
 	const std::string outputFileName = argv[2];
 	std::ofstream outputFile(outputFileName);
 	PrintLabyrinth(outputFile, labyrinth);
