@@ -4,8 +4,11 @@
 #include <string>
 #include <vector>
 
-const int rows = 100;
-const int columns = 100;
+const int ROWS = 100;
+const int COLUMNS = 100;
+const char WALL = '#';
+const char FINISH_SYMBOL = 'B';
+const int START_MARK = 0;
 
 struct Position
 {
@@ -15,22 +18,16 @@ struct Position
 
 struct FieldCell
 {
-	char symbol;
+	char symbol = ' ';
 	int mark = -1;
 };
 
-void CloseFiles(std::ifstream& inputFile, std::ofstream& outputFile)
-{
-	inputFile.close();
-	outputFile.close();
-}
-
 bool CheckInputParametersNumber(int paramNumber)
 {
-	const int parametersNumber = 3;
-	if (paramNumber != parametersNumber)
+	const int PARAMETERS_NUMBER = 3;
+	if (paramNumber != PARAMETERS_NUMBER)
 	{
-		std::cout << "The number of parameters must be " << parametersNumber << " !\n";
+		std::cout << "The number of parameters must be " << PARAMETERS_NUMBER << " !\n";
 		return false;
 	}
 	return true;
@@ -49,24 +46,23 @@ bool CheckOpenFile(std::ifstream& file, const std::string& fileName)
 bool CheckOnAvailableSymbol(char symbol, int& startPositionCount,
 	int& finishPositionCount, bool& isStartPoint)
 {
-	const char startPoint = 'A';
-	const char finishPoint = 'B';
-	const char way = ' ';
-	const char wall = '#'; //если используется в разных функциях выносить в глобальную обсласть
-	if ((symbol != startPoint) && (symbol != finishPoint) && (symbol != way) &&
-		(symbol != wall))
+	const char START_POINT = 'A';
+	const char FINISH_POINT = 'B';
+	const char WAY = ' ';
+	if ((symbol != START_POINT) && (symbol != FINISH_POINT) && (symbol != WAY) &&
+		(symbol != WALL))
 	{
-		std::cout << "The labyrinth must consist of available symbols: '" << startPoint <<
-			"' or '" << finishPoint << "' or '" << way << "' or '" << wall << "'\n";
+		std::cout << "The labyrinth must consist of available symbols: '" << START_POINT <<
+			"' or '" << FINISH_POINT << "' or '" << WAY << "' or '" << WALL << "'\n";
 		return false;
 	}
 	isStartPoint = false;
-	if (symbol == startPoint)
+	if (symbol == START_POINT)
 	{
 		isStartPoint = true;
 		startPositionCount++;
 	}
-	if (symbol == finishPoint)
+	if (symbol == FINISH_POINT)
 	{
 		finishPositionCount++;
 	}
@@ -74,12 +70,12 @@ bool CheckOnAvailableSymbol(char symbol, int& startPositionCount,
 }
 
 bool CharacterAddition(std::vector<std::vector<FieldCell>>& labyrinth, const std::string& line,
-	int currLine, int& startPointsNumber, int& finishPointsNumber, Position& startPosition) //переназвать на добавление линии вместо currLine line index
+	int lineIndex, int& startPointsNumber, int& finishPointsNumber, Position& startPosition)
 {
 	int availableLength = line.length();
-	if (availableLength > rows)
+	if (availableLength > ROWS)
 	{
-		availableLength = rows;
+		availableLength = ROWS;
 	}
 
 	for (int currElem = 0; currElem < availableLength; currElem++)
@@ -93,10 +89,10 @@ bool CharacterAddition(std::vector<std::vector<FieldCell>>& labyrinth, const std
 		}
 		if (isStartPoint)
 		{
-			startPosition.column = currLine;
+			startPosition.column = lineIndex;
 			startPosition.row = currElem;
 		}
-		labyrinth[currLine][currElem].symbol = symbol;
+		labyrinth[lineIndex][currElem].symbol = symbol;
 	}
 
 	return true;
@@ -104,14 +100,14 @@ bool CharacterAddition(std::vector<std::vector<FieldCell>>& labyrinth, const std
 
 bool CheckStartAndEndPointNumbers(int startPointsNumber, int finishPointsNumber)
 {
-	const int expectedStartPointsNumber = 1;
-	const int expectedFinishPointsNumber = 1;
-	if ((startPointsNumber != expectedStartPointsNumber) ||
-		(finishPointsNumber != expectedFinishPointsNumber))
+	const int EXPECTED_START_POINTS_NUMBER = 1;
+	const int EXPECTED_FINISH_POINTS_NUMBER = 1;
+	if ((startPointsNumber != EXPECTED_START_POINTS_NUMBER) ||
+		(finishPointsNumber != EXPECTED_FINISH_POINTS_NUMBER))
 	{
 		std::cout << "The number of start " << startPointsNumber << " and end points " <<
-			finishPointsNumber << " must be equal to " << expectedStartPointsNumber <<
-			" and " << expectedFinishPointsNumber << " respectively\n";
+			finishPointsNumber << " must be equal to " << EXPECTED_START_POINTS_NUMBER <<
+			" and " << EXPECTED_FINISH_POINTS_NUMBER << " respectively\n";
 		return false;
 	}
 	return true;
@@ -124,7 +120,7 @@ bool GetLabyrinth(std::ifstream& input, std::vector<std::vector<FieldCell>>& lab
 	std::string line;
 	int startPointsNumber = 0;
 	int finishPointsNumber = 0;
-	while (getline(input, line) && (++currLine < columns))
+	while (getline(input, line) && (++currLine < COLUMNS))
 	{
 		if (!CharacterAddition(labyrinth, line, currLine, startPointsNumber,
 				finishPointsNumber, startPosition))
@@ -154,43 +150,42 @@ void PrintLabyrinth(std::ofstream& output, std::vector<std::vector<FieldCell>>& 
 	}
 }
 
-void AddQueue(std::vector<std::vector<FieldCell>>& labyrinth, const Position& pos,
+void AddQueue(std::vector<std::vector<FieldCell>>& labyrinth, Position pos,
 	std::queue<Position>& queue, int mark)
 {
-	const int minColumnPosition = 0;
-	const int minRowPosition = 0;
-	const char wall = '#';
-	const int standardMark = -1;
-	if (pos.column >= minColumnPosition && pos.column <= columns - 1 &&
-		pos.row >= minRowPosition && pos.row <= rows - 1 &&
-		labyrinth[pos.column][pos.row].symbol != wall &&
-		labyrinth[pos.column][pos.row].mark == standardMark)
+	const int MIN_COLUMN_POSITION = 0;
+	const int MIN_ROW_POSITION = 0;
+	const int STANDARD_MARK = -1;
+	if (pos.column >= MIN_COLUMN_POSITION && pos.column <= COLUMNS - 1 &&
+		pos.row >= MIN_ROW_POSITION && pos.row <= ROWS - 1 &&
+		labyrinth[pos.column][pos.row].symbol != WALL &&
+		labyrinth[pos.column][pos.row].mark == STANDARD_MARK)
 	{
 		labyrinth[pos.column][pos.row].mark = ++mark;
 		queue.push(pos);
 	}
 }
 
-void MoveQueue(std::vector<std::vector<FieldCell>>& labyrinth, const Position& pos,
+void MoveQueue(std::vector<std::vector<FieldCell>>& labyrinth, Position pos,
 	std::queue<Position>& queue, int mark)
 {
-	const Position topPos = { pos.column - 1, pos.row };
-	AddQueue(labyrinth, topPos, queue, mark);
-	const Position bottomPos = { pos.column + 1, pos.row };
-	AddQueue(labyrinth, bottomPos, queue, mark);
-	const Position leftPos = { pos.column, pos.row - 1 };
-	AddQueue(labyrinth, leftPos, queue, mark);
-	const Position rightPos = { pos.column, pos.row + 1 };
-	AddQueue(labyrinth, rightPos, queue, mark);
+	const Position TOP_POS = { pos.column - 1, pos.row };
+	AddQueue(labyrinth, TOP_POS, queue, mark);
+	const Position BOTTOM_POS = { pos.column + 1, pos.row };
+	AddQueue(labyrinth, BOTTOM_POS, queue, mark);
+	const Position LEFT_POS = { pos.column, pos.row - 1 };
+	AddQueue(labyrinth, LEFT_POS, queue, mark);
+	const Position RIGHT_POS = { pos.column, pos.row + 1 };
+	AddQueue(labyrinth, RIGHT_POS, queue, mark);
 	queue.pop();
 }
 
 bool CheckWay(std::vector<std::vector<FieldCell>>& labyrinth, const Position& pos, int mark)
 {
-	const int minColumnPosition = 0;
-	const int minRowPosition = 0;
-	if (pos.column >= minColumnPosition && pos.column <= columns - 1 &&
-		pos.row >= minRowPosition && pos.row <= rows - 1 &&
+	const int MIN_COLUMN_POSITION = 0;
+	const int MIN_ROW_POSITION = 0;
+	if (pos.column >= MIN_COLUMN_POSITION && pos.column <= COLUMNS - 1 &&
+		pos.row >= MIN_ROW_POSITION && pos.row <= ROWS - 1 &&
 		labyrinth[pos.column][pos.row].mark == --mark)
 	{
 		return true;
@@ -201,71 +196,79 @@ bool CheckWay(std::vector<std::vector<FieldCell>>& labyrinth, const Position& po
 void RestoreWay(std::vector<std::vector<FieldCell>>& labyrinth, Position& pos, int& mark)
 {
 	Position nextPos;
-	const Position topPos = { pos.column - 1, pos.row };
-	if (CheckWay(labyrinth, topPos, mark))
+	const Position TOP_POS = { pos.column - 1, pos.row };
+	if (CheckWay(labyrinth, TOP_POS, mark))
 	{
-		nextPos = topPos;
+		nextPos = TOP_POS;
 	}
-	const Position bottomPos = { pos.column + 1, pos.row };
-	if (CheckWay(labyrinth, bottomPos, mark))
+	const Position BOTTOM_POS = { pos.column + 1, pos.row };
+	if (CheckWay(labyrinth, BOTTOM_POS, mark))
 	{
-		nextPos = bottomPos;
+		nextPos = BOTTOM_POS;
 	}
-	const Position leftPos = { pos.column, pos.row - 1 };
-	if (CheckWay(labyrinth, leftPos, mark))
+	const Position LEFT_POS = { pos.column, pos.row - 1 };
+	if (CheckWay(labyrinth, LEFT_POS, mark))
 	{
-		nextPos = leftPos;
+		nextPos = LEFT_POS;
 	}
-	const Position rightPos = { pos.column, pos.row + 1 };
-	if (CheckWay(labyrinth, rightPos, mark))
+	const Position RIGHT_POS = { pos.column, pos.row + 1 };
+	if (CheckWay(labyrinth, RIGHT_POS, mark))
 	{
-		nextPos = rightPos;
+		nextPos = RIGHT_POS;
 	}
 	pos = nextPos;
 	mark = labyrinth[pos.column][pos.row].mark;
 }
 
-void FindAndAddWay(std::vector<std::vector<FieldCell>>& labyrinth,
-	const Position& startPosition)
+void FindWay(std::vector<std::vector<FieldCell>>& labyrinth,
+	Position startPosition, Position& pos, int& mark)
 {
-	const char finishSymbol = 'B';
-	const int startMark = 0;
-	int mark = startMark;
-	labyrinth[startPosition.column][startPosition.row].mark = mark;
-	
-	//больще разделений на смысловые части
 	std::queue<Position> queue;
 	queue.push(startPosition);
-
-	FieldCell cell;
-	Position pos;
 
 	while (!queue.empty())
 	{
 		pos = queue.front();
 		mark = labyrinth[pos.column][pos.row].mark;
-		if (labyrinth[pos.column][pos.row].symbol == finishSymbol)
+		if (labyrinth[pos.column][pos.row].symbol == FINISH_SYMBOL)
 		{
 			break;
 		}
 		MoveQueue(labyrinth, pos, queue, mark);
 	}
+}
 
-	if (labyrinth[pos.column][pos.row].symbol != finishSymbol) 
-	{
-		return;
-	}
-	//разделеть на поиск и метку пути
-	while (mark != startMark)
+void MarkWay(std::vector<std::vector<FieldCell>>& labyrinth,
+	Position pos, int mark)
+{
+	while (mark != START_MARK)
 	{
 		RestoreWay(labyrinth, pos, mark);
-		if (mark == startMark)
+		if (mark == START_MARK)
 		{
 			break;
 		}
-		const char waySymbol = '.';
-		labyrinth[pos.column][pos.row].symbol = waySymbol;
+		const char WAY_SYMBOL = '.';
+		labyrinth[pos.column][pos.row].symbol = WAY_SYMBOL;
 	}
+}
+
+void FindAndMarkWay(std::vector<std::vector<FieldCell>>& labyrinth,
+	Position startPosition)
+{
+	int mark = START_MARK;
+	labyrinth[startPosition.column][startPosition.row].mark = mark;
+	FieldCell cell;
+	Position pos;
+
+	FindWay(labyrinth, startPosition, pos, mark);
+
+	if (labyrinth[pos.column][pos.row].symbol != FINISH_SYMBOL) 
+	{
+		return;
+	}
+	
+	MarkWay(labyrinth, pos, mark);
 }
 
 int main(int argc, char* argv[])
@@ -275,24 +278,23 @@ int main(int argc, char* argv[])
 		return 1;
 	}
 
-	const std::string inputFileName = argv[1];
-	std::ifstream inputFile(inputFileName);
-
-	if (!CheckOpenFile(inputFile, inputFileName))
+	std::ifstream inputFile(argv[1]);
+	if (!CheckOpenFile(inputFile, argv[1]))
 	{
 		return 2;
 	}
 
 	Position startPosition;
-	std::vector<std::vector<FieldCell>> labyrinth(rows, std::vector<FieldCell>(columns));
+	std::vector<std::vector<FieldCell>> labyrinth(ROWS, std::vector<FieldCell>(COLUMNS));
 	if (!GetLabyrinth(inputFile, labyrinth, startPosition))
 	{
 		return 3;
 	}
-	FindAndAddWay(labyrinth, startPosition); //пометить вместо добавить потому что при чтении add подразумевает куда
-	const std::string outputFileName = argv[2];
-	std::ofstream outputFile(outputFileName);
+
+	FindAndMarkWay(labyrinth, startPosition);
+
+	std::ofstream outputFile(argv[2]);
 	PrintLabyrinth(outputFile, labyrinth);
-	CloseFiles(inputFile, outputFile);
+
 	return 0;
 }
