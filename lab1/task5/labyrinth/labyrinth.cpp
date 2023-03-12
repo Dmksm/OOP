@@ -281,14 +281,14 @@ int main(int argc, char* argv[])
 	std::ifstream inputFile(argv[1]);
 	if (!CheckOpenFile(inputFile, argv[1]))
 	{
-		return 2;
+		return 1;
 	}
 
 	Position startPosition;
 	std::vector<std::vector<FieldCell>> labyrinth(ROWS, std::vector<FieldCell>(COLUMNS));
 	if (!GetLabyrinth(inputFile, labyrinth, startPosition))
 	{
-		return 3;
+		return 1;
 	}
 
 	FindAndMarkWay(labyrinth, startPosition);
