@@ -54,21 +54,20 @@ double getMatrixCellValue(const std::vector<std::vector<double>>& matrix1,
 	return result;
 }
 
-//лучше копировать в результирующую матрицу а не возвращать с копированием так быстрее
-std::vector<std::vector<double>> MultiplyMatrices(
+void MultiplyMatrices(
 	const std::vector<std::vector<double>>& matrix1, 
-	const std::vector<std::vector<double>>& matrix2)
+	const std::vector<std::vector<double>>& matrix2,
+	std::vector<std::vector<double>>& resultMatrix
+)
 {
-	std::vector<std::vector<double>> resultMatrix(matrixSize, std::vector<double>(matrixSize)); //если уверен то можно не предполагать какая размер матрицы
-	for (size_t currRow = 0; currRow < resultMatrix.size(); currRow++)
+	for (size_t currRow = 0; currRow < matrixSize; currRow++)
 	{
-		for (size_t currColumn = 0; currColumn < resultMatrix[currRow].size(); currColumn++)
+		for (size_t currColumn = 0; currColumn < matrixSize; currColumn++)
 		{
 			resultMatrix[currRow][currColumn] = 
 				getMatrixCellValue(matrix1, matrix2, currRow, currColumn); 
 		}
 	}
-	return resultMatrix;
 }
 
 void PrintMatrix(const std::vector<std::vector<double>>& matrix, std::ostream& output)
@@ -80,7 +79,7 @@ void PrintMatrix(const std::vector<std::vector<double>>& matrix, std::ostream& o
 		{
 			output << column << "      "; // set fixed и precision разобраться для выода опред кол знаков
 		}
-		output << "\n"; // использовать std::endl так как больше поддерживается чем \n
+		output << std::endl;
 	}
 }
 
@@ -90,20 +89,28 @@ int main(int argc, char* argv[])
 	{
 		return 1;
 	}
+
 	std::ifstream inputFile1(argv[1]);
-	if (!CheckOpenFile(inputFile1, argv[1])) // возвращаем либо 0 либо 1, сейчас не очень актуально разделять
+	if (!CheckOpenFile(inputFile1, argv[1]))
 	{
-		return 2;
+		return 1;
 	}
+
 	std::ifstream inputFile2(argv[2]);
 	if (!CheckOpenFile(inputFile2, argv[2]))
 	{
-		return 3;
+		return 1;
 	}
+
 	std::vector<std::vector<double>> matrix1(matrixSize, std::vector<double>(matrixSize));
 	ReadMatrix(matrix1, inputFile1);
+
 	std::vector<std::vector<double>> matrix2(matrixSize, std::vector<double>(matrixSize));
 	ReadMatrix(matrix2, inputFile2);
-	PrintMatrix(MultiplyMatrices(matrix1, matrix2), std::cout);
+
+	std::vector<std::vector<double>> resultMatrix(matrixSize, std::vector<double>(matrixSize));
+	MultiplyMatrices(matrix1, matrix2, resultMatrix);
+
+	PrintMatrix(resultMatrix, std::cout);
 	return 0;
 }
