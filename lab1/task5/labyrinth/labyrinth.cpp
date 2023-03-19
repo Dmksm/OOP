@@ -10,6 +10,8 @@ const char WALL = '#';
 const char FINISH_SYMBOL = 'B';
 const int START_MARK = 0;
 
+
+
 struct Position
 {
 	int column = 0;
@@ -27,7 +29,8 @@ bool CheckInputParametersNumber(int paramNumber)
 	const int PARAMETERS_NUMBER = 3;
 	if (paramNumber != PARAMETERS_NUMBER)
 	{
-		std::cout << "The number of parameters must be " << PARAMETERS_NUMBER << " !\n";
+		std::cout << "The number of parameters must be " << PARAMETERS_NUMBER <<
+			" !" << std::endl;
 		return false;
 	}
 	return true;
@@ -37,7 +40,7 @@ bool CheckOpenFile(std::ifstream& file, const std::string& fileName)
 {
 	if (!file.is_open())
 	{
-		std::cout << "Unable to open " << fileName << " file!\n";
+		std::cout << "Unable to open " << fileName << " file!" << std::endl;
 		return false;
 	}
 	return true;
@@ -53,9 +56,10 @@ bool CheckOnAvailableSymbol(char symbol, int& startPositionCount,
 		(symbol != WALL))
 	{
 		std::cout << "The labyrinth must consist of available symbols: '" << START_POINT <<
-			"' or '" << FINISH_POINT << "' or '" << WAY << "' or '" << WALL << "'\n";
+			"' or '" << FINISH_POINT << "' or '" << WAY << "' or '" << WALL << "'" << std::endl;
 		return false;
 	}
+
 	isStartPoint = false;
 	if (symbol == START_POINT)
 	{
@@ -137,6 +141,7 @@ bool GetLabyrinth(std::ifstream& input, std::vector<std::vector<FieldCell>>& lab
 
 void PrintLabyrinth(std::ofstream& output, std::vector<std::vector<FieldCell>>& labyrinth)
 {
+	//упростить через range-based for
 	for (size_t currLine = 0; currLine < labyrinth.size();)
 	{
 		for (size_t currElem = 0; currElem < labyrinth[currLine].size(); currElem++)
@@ -153,6 +158,7 @@ void PrintLabyrinth(std::ofstream& output, std::vector<std::vector<FieldCell>>& 
 void AddQueue(std::vector<std::vector<FieldCell>>& labyrinth, Position pos,
 	std::queue<Position>& queue, int mark)
 {
+	// упростить условие
 	const int MIN_COLUMN_POSITION = 0;
 	const int MIN_ROW_POSITION = 0;
 	const int STANDARD_MARK = -1;
@@ -169,14 +175,19 @@ void AddQueue(std::vector<std::vector<FieldCell>>& labyrinth, Position pos,
 void MoveQueue(std::vector<std::vector<FieldCell>>& labyrinth, Position pos,
 	std::queue<Position>& queue, int mark)
 {
-	const Position TOP_POS = { pos.column - 1, pos.row };
-	AddQueue(labyrinth, TOP_POS, queue, mark);
-	const Position BOTTOM_POS = { pos.column + 1, pos.row };
-	AddQueue(labyrinth, BOTTOM_POS, queue, mark);
-	const Position LEFT_POS = { pos.column, pos.row - 1 };
-	AddQueue(labyrinth, LEFT_POS, queue, mark);
-	const Position RIGHT_POS = { pos.column, pos.row + 1 };
-	AddQueue(labyrinth, RIGHT_POS, queue, mark);
+	//вектор избыточен лучше массив
+	const std::vector<Position> adjacentPositionsKey = {
+		{ -1, 0 },
+		{ 1, 0 },
+		{ 0, -1 },
+		{ 0, 1 }
+	};
+	for (Position posKey : adjacentPositionsKey)
+	{
+		const Position adjacentPosition = { pos.column + posKey.column, pos.row + posKey.row };
+		AddQueue(labyrinth, adjacentPosition, queue, mark);
+	}
+
 	queue.pop();
 }
 
@@ -196,6 +207,7 @@ bool CheckWay(std::vector<std::vector<FieldCell>>& labyrinth, const Position& po
 void RestoreWay(std::vector<std::vector<FieldCell>>& labyrinth, Position& pos, int& mark)
 {
 	Position nextPos;
+	//устранить дублирование кода top bottom left rigth
 	const Position TOP_POS = { pos.column - 1, pos.row };
 	if (CheckWay(labyrinth, TOP_POS, mark))
 	{
@@ -220,6 +232,8 @@ void RestoreWay(std::vector<std::vector<FieldCell>>& labyrinth, Position& pos, i
 	mark = labyrinth[pos.column][pos.row].mark;
 }
 
+
+//избавится от возврата аргументов pos и mark
 void FindWay(std::vector<std::vector<FieldCell>>& labyrinth,
 	Position startPosition, Position& pos, int& mark)
 {
@@ -273,11 +287,13 @@ void FindAndMarkWay(std::vector<std::vector<FieldCell>>& labyrinth,
 
 int main(int argc, char* argv[])
 {
+	//парс команд лайн возвращает структуру опциональную содержащую имя входного и выходного файла
 	if (!CheckInputParametersNumber(argc))
 	{
 		return 1;
 	}
 
+	//выделить функцию которая считает из фала по указанному имени
 	std::ifstream inputFile(argv[1]);
 	if (!CheckOpenFile(inputFile, argv[1]))
 	{
@@ -285,7 +301,7 @@ int main(int argc, char* argv[])
 	}
 
 	Position startPosition;
-	std::vector<std::vector<FieldCell>> labyrinth(ROWS, std::vector<FieldCell>(COLUMNS));
+	std::vector<std::vector<FieldCell>> labyrinth(ROWS, std::vector<FieldCell>(COLUMNS)); //ввести алиас для понятности 
 	if (!GetLabyrinth(inputFile, labyrinth, startPosition))
 	{
 		return 1;
@@ -293,6 +309,7 @@ int main(int argc, char* argv[])
 
 	FindAndMarkWay(labyrinth, startPosition);
 
+	//написать функцию сохранения в файл по указанному имени
 	std::ofstream outputFile(argv[2]);
 	PrintLabyrinth(outputFile, labyrinth);
 
