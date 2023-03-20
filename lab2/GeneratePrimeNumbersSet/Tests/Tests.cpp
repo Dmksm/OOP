@@ -32,9 +32,18 @@ SCENARIO("Generating prime numbers set")
 			REQUIRE(GeneratePrimeNumbersSet(upperBound) == set);
 		}
 	}
-	WHEN("input upper bound is 1000")
+	WHEN("input upper bound is 100")
 	{
-		THEN("generated set will contaims first 1000 prime numbers")
+		THEN("generated set will contaims first 100 prime numbers")
+		{
+			int upperBound = 100000000;
+			std::set<int> set = {};
+			REQUIRE(GeneratePrimeNumbersSet(upperBound).size() == 5761455);
+		}
+	}
+	WHEN("input upper bound is 100")
+	{
+		THEN("generated set will contaims first 100 prime numbers")
 		{
 			int upperBound = 100;
 			std::set<int> set = {
