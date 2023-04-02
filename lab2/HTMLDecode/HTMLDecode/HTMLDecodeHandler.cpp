@@ -1,5 +1,7 @@
 #include "HTMLDecodeHandler.h"
 
+//не получается сделать map constant из за скоьок 
+//мап избыточен например статич массив сделатт
 std::map <std::string, char> SPECIAL_SEQUENCES_LIST =
 {
     {"&quot;", '\"'},

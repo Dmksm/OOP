@@ -7,7 +7,7 @@ int main(int argc, char* argv[])
 	{
 		return 1;
 	}
-	
+
 	for (int num : GeneratePrimeNumbersSet(upperBound))
 	{
 		std::cout << num << " ";

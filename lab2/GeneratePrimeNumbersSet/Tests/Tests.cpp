@@ -37,7 +37,6 @@ SCENARIO("Generating prime numbers set")
 		THEN("generated set will contaims first 100 prime numbers")
 		{
 			int upperBound = 100000000;
-			std::set<int> set = {};
 			REQUIRE(GeneratePrimeNumbersSet(upperBound).size() == 5761455);
 		}
 	}
@@ -89,7 +88,7 @@ SCENARIO("Getting numbers set")
 		{
 			std::set<int> set, resultSet = {2};
 			std::vector<bool> sieve = {0, 0, 1};
-			GetNumbersSet(set, sieve);
+			GetNumbersSet(set, sieve, 3);
 			REQUIRE(set == resultSet);
 		}
 	}
@@ -99,7 +98,7 @@ SCENARIO("Getting numbers set")
 		{
 			std::set<int> set, resultSet = { 2, 3, 5, 7, 11 };
 			std::vector<bool> sieve = { 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0};
-			GetNumbersSet(set, sieve);
+			GetNumbersSet(set, sieve, 11);
 			REQUIRE(set == resultSet);
 		}
 	}
@@ -110,9 +109,10 @@ SCENARIO("Sift numbers")
 	{
 		THEN("result sieve is first 2 values")
 		{
-			std::vector<bool> sieve(2, true),
+			int upperBound = 2;
+			std::vector<bool> sieve(upperBound / 2 + 1, true),
 				resultSieve = {1, 1};
-			SiftNumbers(sieve);
+			SiftNumbers(sieve, 2);
 			REQUIRE(sieve == resultSieve);
 		}
 	}
@@ -121,9 +121,10 @@ SCENARIO("Sift numbers")
 	{
 		THEN("result sieve is first 15 values")
 		{
-			std::vector<bool> sieve(15, true), 
-				resultSieve = { 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1 };
-			SiftNumbers(sieve);
+			int upperBound = 15;
+			std::vector<bool> sieve(upperBound / 2 + 1, true),
+				resultSieve = { 1, 1, 1, 1, 0, 1, 1, 0 };
+			SiftNumbers(sieve, 15);
 			REQUIRE(sieve == resultSieve);
 		}
 	}
