@@ -5,9 +5,9 @@
 class CCompound final : public CBody
 {
 public:
+	CCompound(std::vector<CBody&> bodies);
 	bool AddChildBody(CBody& child);
 	double GetVolume() const override;
-	double GetMass() const noexcept override;
 
 private:
 	void AppendProperties(std::ostream& strm) const override;
