@@ -1,13 +1,13 @@
-﻿#include "CarHandler.h";
+﻿#include "CalculatorHandler.h"
 
-#include "CRemoteControl.h";
+#include "CRemoteControl.h"
 
 using namespace std;
 
 int main()
 {
-	Car car; //Классы первая тоько большая
-	CRemoteControl remoteControl(car, cin, cout);
+	Calculator calculator;
+	CRemoteControl remoteControl(calculator, cin, cout);
 
 	while (!cin.eof() && !cin.fail())
 	{

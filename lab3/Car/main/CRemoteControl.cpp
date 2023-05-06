@@ -1,24 +1,24 @@
 #include "CRemoteControl.h"
-#include "CarHandler.h"
+#include "CarHandler.h" // forward definition посмотреть 
 
 using namespace std;
 using namespace std::placeholders;
 
-CRemoteControl::CRemoteControl(CAR& car, std::istream& input, std::ostream& output)
+CRemoteControl::CRemoteControl(Car& car, std::istream& input, std::ostream& output)
 	: m_car(car)
 	, m_input(input)
 	, m_output(output)
 	, m_actionMap({
-		  { "EngineOn", bind(&CRemoteControl::EngineOn, this) },
-		  { "EngineOff", bind(&CRemoteControl::EngineOff, this) },
-		  { "Info", bind(&CRemoteControl::Info, this) }, 
-		  { "SetGear", bind(&CRemoteControl::SetGear, this, _1) }, 
-		  { "SetSpeed", bind(&CRemoteControl::SetSpeed, this, _1) }
+		  { "engineon", bind(&CRemoteControl::EngineOn, this) },
+		  { "engineOff", bind(&CRemoteControl::EngineOff, this) },
+		  { "info", bind(&CRemoteControl::Info, this) }, 
+		  { "setgear", bind(&CRemoteControl::SetGear, this, _1) }, 
+		  { "setspeed", bind(&CRemoteControl::SetSpeed, this, _1) }
 	  })
 {
 }
 
-bool CRemoteControl::HandleCommand()
+bool CRemoteControl::HandleCommand() 
 {
 	string commandLine;
 	getline(m_input, commandLine);
@@ -68,8 +68,18 @@ bool CRemoteControl::Info()
 
 bool CRemoteControl::SetGear(std::istream& args)
 {
+	std::string arg;
+	args >> arg;
 	int gear;
-	args >> gear;
+	try
+	{
+		gear = std::stoi(arg);
+	}
+	catch (exception e)
+	{
+		std::cout << "Unexpected argument " << arg << std::endl;
+		return false;
+	} // подогнать под 20 стандарт для использования современных функций
 	(m_car.SetGear(gear)) ? std::cout << "Car set gear to " << to_string(m_car.GetGear()) :
 		std::cout << "Car did not set gear to " << to_string(gear);
 	std::cout << endl;
@@ -79,8 +89,18 @@ bool CRemoteControl::SetGear(std::istream& args)
 
 bool CRemoteControl::SetSpeed(std::istream& args)
 {
+	std::string arg;
+	args >> arg;
 	int speed;
-	args >> speed;
+	try
+	{
+		speed = std::stoi(arg);
+	}
+	catch (exception e)
+	{
+		std::cout << "Unexpected argument " << arg << std::endl;
+		return false;
+	}
 	(m_car.SetSpeed(speed)) ? std::cout << "Car set speed to " << to_string(m_car.GetSpeed()) :
 		std::cout << "Car did not set speed to " << to_string(speed);
 	std::cout << endl;

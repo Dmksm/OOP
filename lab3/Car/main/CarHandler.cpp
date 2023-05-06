@@ -1,26 +1,26 @@
 #include "CarHandler.h";
 
-bool CAR::IsTurnedOn() const
+bool Car::IsTurnedOn() const
 {
 	return m_isOn;
 }
 
-int CAR::GetSpeed() const
+int Car::GetSpeed() const
 {
 	return m_selectedSpeed;
 }
 
-int CAR::GetGear() const
+int Car::GetGear() const
 {
 	return m_selectedGear;
 }
 
-void CAR::TurnOnEngine()
+void Car::TurnOnEngine()
 {
 	m_isOn = true;
 }
 
-bool CAR::TurnOffEngine()
+bool Car::TurnOffEngine()
 {
 	if (m_selectedGear == 0 && m_selectedSpeed == 0)
 	{
@@ -29,7 +29,7 @@ bool CAR::TurnOffEngine()
 	return !m_isOn;
 }
 
-std::string CAR::GetDirection() const
+std::string Car::GetDirection() const //поправит ьситуцию когда ехали назад переклюсили на 0 и едем вперед посему то
 {
 	if (m_selectedGear < 0)
 	{
@@ -42,7 +42,7 @@ std::string CAR::GetDirection() const
 	return "forward";
 }
 
-bool CAR::SetGear(int gear)
+bool Car::SetGear(int gear)
 {
 	bool isAvailableGear = (gear >= -1) && (gear <= 5) &&
 		(m_speedForGear.at(gear).first <= m_selectedSpeed) &&
@@ -68,9 +68,10 @@ bool CAR::SetGear(int gear)
 	return false;
 }
 
-bool CAR::SetSpeed(int speed)
+bool Car::SetSpeed(int speed)
 {
-	bool isAvailableSpeed = (speed >= 0) && (speed <= INT_MAX) && 
+	const int MAX_SPEED = 150;
+	bool isAvailableSpeed = (speed >= 0) && (speed <= MAX_SPEED) && //учесть ограничение в 150 
 		(speed >= m_speedForGear.at(m_selectedGear).first) &&
 		(speed <= m_speedForGear.at(m_selectedGear).second);
 

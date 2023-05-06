@@ -1,13 +1,13 @@
 #pragma once
 #include "stdafx.h"
 
-class CAR;
+class Car;
 
 class CRemoteControl
 {
 public:
-	CRemoteControl(CAR& car, std::istream& input, std::ostream& output);
-	bool HandleCommand();
+	CRemoteControl(Car& car, std::istream& input, std::ostream& output);
+	bool HandleCommand(); //изучить про деструкторы и когда их применять
 
 private:
 	bool EngineOn();
@@ -21,7 +21,7 @@ private:
 
 	using ActionMap = std::map<std::string, Handler>;
 
-	CAR& m_car;
+	Car& m_car;
 	std::istream& m_input;
 	std::ostream& m_output;
 

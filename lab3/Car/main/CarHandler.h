@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 
-class CAR
+class Car
 {
 public:
 	void TurnOnEngine();
@@ -23,7 +23,7 @@ private:
 
 	const SpeedForGear m_speedForGear = { 
 		{ -1, { 0, 20 } },
-		{ 0, { 0, INT_MAX } },
+		{ 0, { 0, 150 } },
 		{ 1, { 0, 30 } },
 		{ 2, { 20, 50 } },
 		{ 3, { 30, 60 } },

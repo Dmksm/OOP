@@ -38,7 +38,7 @@ void SortInAscendingOrder(std::vector<float>& vector)
 	sort(vector.begin(), vector.end());
 }
 
-void PrintVector(std::vector<float>& vector, std::ostream& output)
+void PrintVector(const std::vector<float>& vector, std::ostream& output)
 {
 	for (float number : vector)
 	{

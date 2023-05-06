@@ -11,4 +11,4 @@ void HandleVector(std::vector<float>& vector, float& min);
 
 void SortInAscendingOrder(std::vector<float>& vector);
 
-void PrintVector(std::vector<float>& vector, std::ostream& output);
+void PrintVector(const std::vector<float>& vector, std::ostream& output);

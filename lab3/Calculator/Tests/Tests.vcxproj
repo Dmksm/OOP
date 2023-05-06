@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{45d17098-bca5-4480-8054-85b7cfe53c94}</ProjectGuid>
-    <RootNamespace>main</RootNamespace>
+    <ProjectGuid>{940ad238-0024-4968-9aba-b0a9582aa8fd}</ProjectGuid>
+    <RootNamespace>Tests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -95,12 +95,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>"$(TargetPath)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>Running Tests</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -120,12 +118,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>"$(TargetPath)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>Running Tests</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -141,12 +137,10 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>"$(TargetPath)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>Running Tests</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -166,23 +160,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>"$(TargetPath)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>
-      </Message>
+      <Message>Running Tests</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CarHandler.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="CRemoteControl.cpp" />
+    <ClCompile Include="..\main\CalculatorHandler.cpp" />
+    <ClCompile Include="test.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CarHandler.h" />
-    <ClInclude Include="CRemoteControl.h" />
-    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\main\CalculatorHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
