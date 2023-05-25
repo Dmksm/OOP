@@ -13,6 +13,6 @@ public:
 
 private:
 	void AppendProperties(std::ostream& strm) const override;
-	double m_base_radius;
+	double m_base_radius; //паскаль кейс только m_ можно
 	double m_height;
 };

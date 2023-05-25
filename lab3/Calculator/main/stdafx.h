@@ -13,3 +13,4 @@
 #include <cmath>
 #include <optional>
 #include <tuple>
+#include <memory>

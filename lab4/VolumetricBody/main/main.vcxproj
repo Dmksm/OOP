@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -172,6 +172,7 @@
     <ClCompile Include="CCone.cpp" />
     <ClCompile Include="CCylinder.cpp" />
     <ClCompile Include="CParallelepiped.cpp" />
+    <ClCompile Include="CRemoteControl.cpp" />
     <ClCompile Include="CSphere.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
@@ -181,6 +182,7 @@
     <ClInclude Include="CCone.h" />
     <ClInclude Include="CCylinder.h" />
     <ClInclude Include="CParallelepiped.h" />
+    <ClInclude Include="CRemoteControl.h" />
     <ClInclude Include="CSphere.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetVer.h" />
