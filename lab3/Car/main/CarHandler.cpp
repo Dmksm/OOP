@@ -10,7 +10,7 @@ int Car::GetSpeed() const
 	return m_selectedSpeed;
 }
 
-int Car::GetGear() const
+unsigned Car::GetGear() const
 {
 	return m_selectedGear;
 }

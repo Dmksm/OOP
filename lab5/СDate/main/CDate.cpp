@@ -4,6 +4,7 @@
 const unsigned LEAP_YEARS_NUMBER_IN_400_YEARS = 97;
 const unsigned LEAP_YEARS_NUMBER_IN_100_YEARS = 24;
 const unsigned DAYS_IN_MONTH_COUNT[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+const unsigned MAX_VALID_TIMESTAMP = 2932896;
 
 struct DWMY
 {
@@ -12,6 +13,16 @@ struct DWMY
 	Month month;
 	unsigned year;
 };
+
+void CheckValidOperationResult(unsigned timestamp, long int day)
+{
+	if (((day > 0) && (timestamp <= MAX_VALID_TIMESTAMP - day) ||
+		((day < 0) && (timestamp >= -day))))
+	{
+		return;
+	}
+	throw std::invalid_argument("Overflow!");
+}
 
 bool ÑheckLeapYear(unsigned year)
 {
@@ -34,7 +45,7 @@ bool ÑheckLeapYear(unsigned year)
 
 bool IsValid(unsigned day, Month month, unsigned year)
 {
-	int daysCountInCurrYear = DAYS_IN_MONTH_COUNT[static_cast<unsigned>(month) - 1];
+	unsigned daysCountInCurrYear = DAYS_IN_MONTH_COUNT[static_cast<unsigned>(month) - 1];
 	if (ÑheckLeapYear(year) && month == Month::FEBRUARY)
 	{
 		++daysCountInCurrYear;
@@ -185,44 +196,42 @@ std::istream& operator>>(std::istream& istream, CDate& date)
 	}
 	return istream;
 }
-//----------------------------------------------------------------------------------------Äîäåëàòü
-CDate operator+(const CDate& date, long int day)
+
+CDate CDate::operator+(long int day) const
 {
-	return date.GetTimestamp()
+	CheckValidOperationResult(this->m_timestamp, day);
+	return CDate(this->m_timestamp + day);
 }
 
-CDate operator-(const CDate& date, long int day)
+CDate CDate::operator-(long int day) const
 {
-	return date + (-1 * day);
+	return *this + -day;
 }
 
-long int operator-(const CDate& leftDate, const CDate& rightDate)
+long int CDate::operator-(const CDate& date) const
 {
-	return leftDate.GetTimestamp() - rightDate.GetTimestamp();
+	long int result, k = 1;
+	if (this->m_timestamp > date.m_timestamp)
+	{
+		result = this->m_timestamp - date.m_timestamp;
+	}
+	else
+	{
+		k = -1;
+		result = date.m_timestamp - this->m_timestamp;
+	}
+	return result * k;
 }
 
 CDate& CDate::operator++()
 {
-	if (this->m_timestamp == std::numeric_limits<unsigned int>::max())
-	{
-		throw std::invalid_argument("Overflow!");
-	}
-	++this->m_timestamp;
+	this->m_timestamp = (*this + 1).m_timestamp;
 	return *this;
-}
-
-unsigned CDate::GetTimestamp() const
-{
-	return m_timestamp;
 }
 
 CDate& CDate::operator--()
 {
-	if (this->m_timestamp == std::numeric_limits<unsigned int>::min())
-	{
-		throw std::invalid_argument("Overflow!");
-	}
-	--this->m_timestamp;
+	this->m_timestamp = (*this + -1).m_timestamp;
 	return *this;
 }
 
@@ -240,85 +249,25 @@ CDate CDate::operator--(int)
 	return oldDate;
 }
 
-bool CDate::operator==(const CDate& date)
+std::strong_ordering CDate::operator<=>(const CDate& date) const
 {
-	return this->GetDay() == date.GetDay() &&
-		this->GetMonth() == date.GetMonth() &&
-		this->GetYear() == date.GetYear();
+	return this->m_timestamp <=> date.m_timestamp;
 }
 
-bool CDate::operator>(const CDate& date)
+bool CDate::operator==(const CDate& date) const
 {
-	if (this->GetYear() > date.GetYear())
-	{
-		return true;
-	}
-	if (this->GetYear() < date.GetYear())
-	{
-		return false;
-	}
-
-	if (this->GetMonth() > date.GetMonth())
-	{
-		return true;
-	}
-	if (this->GetMonth() < date.GetMonth())
-	{
-		return false;
-	}
-
-	if (this->GetDay() > date.GetDay())
-	{
-		return true;
-	}
-	if (this->GetDay() < date.GetDay())
-	{
-		return false;
-	}
-
-	return false;
+	return this->m_timestamp == date.m_timestamp;
 }
 
-bool CDate::operator>=(const CDate& date)
+CDate& CDate::operator-=(long int day)
 {
-	return (*this > date) || (*this == date);
-}
-
-bool CDate::operator<(const CDate& date)
-{
-	return !(*this >= date);
-}
-
-bool CDate::operator<=(const CDate& date)
-{
-	return !(*this > date);
-}
-
-bool CDate::operator!=(const CDate& date)
-{
-	return !(*this == date);
-}
-
-CDate& CDate::operator-=(const CDate& date)
-{
-	if ((date.m_timestamp > 0) && 
-		(this->m_timestamp < std::numeric_limits<unsigned int>::min() + date.m_timestamp))
-	{
-		throw std::invalid_argument("Overflow!");
-	}
-
-	if ((date.m_timestamp < 0) &&
-		(this->m_timestamp > std::numeric_limits<unsigned int>::max() + date.m_timestamp))
-	{
-		throw std::invalid_argument("Overflow!");
-	}
-	this->m_timestamp -= date.m_timestamp;
+	this->m_timestamp = (*this - day).m_timestamp;
 	return *this;
 }
 
-CDate& CDate::operator+=(const CDate& date)
+CDate& CDate::operator+=(long int day)
 {
-	this->m_timestamp -= (-1 * date.m_timestamp);
+	this->m_timestamp = (*this + day).m_timestamp;
 	return *this;
 }
 

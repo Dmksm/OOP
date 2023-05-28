@@ -25,10 +25,10 @@ private:
 	std::ostream& m_output;
 
 	const ActionMap m_actionMap{
-		{ "info", bind(&CController::Info, this) },
-		{ "help", bind(&CController::Help, this) },
-		{ "readdate", bind(&CController::ReadDate, this, _1) },
-		{ "decrement", bind(&CController::Decrement, this) },
-		{ "increment", bind(&CController::Increment, this) }
+		{ "info", std::bind(&CController::Info, this) },
+		{ "help", std::bind(&CController::Help, this) },
+		{ "readdate", std::bind(&CController::ReadDate, this, std::placeholders::_1) },
+		{ "decrement", std::bind(&CController::Decrement, this) },
+		{ "increment", std::bind(&CController::Increment, this) }
 	};
 };

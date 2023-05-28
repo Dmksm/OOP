@@ -1,4 +1,5 @@
 #pragma once
+#include "stdafx.h"
 enum class Month
 {
 	JANUARY = 1,
@@ -29,6 +30,10 @@ enum class WeekDay
 class CDate
 {
 public:
+	CDate(unsigned day, Month month, unsigned year);
+
+	CDate(unsigned timestamp = 0);
+
 	CDate& operator++();
 
 	CDate& operator--();
@@ -37,25 +42,13 @@ public:
 
 	CDate operator--(int);
 
-	CDate& operator-=(const CDate& Date);
+	CDate& operator-=(long int day);
 
-	CDate& operator+=(const CDate& Date);
+	CDate& operator+=(long int day);
 
-	bool operator!=(const CDate& Date);
+	bool operator==(const CDate& Date) const;
 
-	bool operator==(const CDate& Date);
-
-	bool operator>=(const CDate& date);
-
-	bool operator>(const CDate& date);
-
-	bool operator<=(const CDate& date);
-
-	bool operator<(const CDate& date);
-
-	CDate(unsigned day, Month month, unsigned year);
-
-	CDate(unsigned timestamp = 0);
+	std::strong_ordering operator<=>(const CDate& date) const;
 
 	unsigned GetDay() const;
 
@@ -63,11 +56,13 @@ public:
 
 	unsigned GetYear() const;
 
-	unsigned GetTimestamp() const;
-
 	WeekDay GetWeekDay() const;
+	
+	CDate operator+(long int day) const;
 
-	bool IsValid(unsigned day, Month month, unsigned year) const;
+	CDate operator-(long int day) const;
+
+	long int operator-(const CDate& date) const;
 
 private:
 	unsigned m_timestamp;
@@ -76,10 +71,3 @@ private:
 std::ostream& operator<<(std::ostream& os, const CDate& Date);
 
 std::istream& operator>>(std::istream& is, CDate& Date);
-//---------------------------------------------------------------------------------------Доделать
-CDate operator+(const CDate& date, long int day);
-
-CDate operator-(const CDate& date, long int day);
-
-long int operator-(const CDate& leftDate, const CDate& rightDate);
-//---------------------------------------------------------------------------------------

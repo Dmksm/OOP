@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdio.h>
+#include <compare>
 #include <tchar.h>
 #define _USE_MATH_DEFINES
 #include <math.h>

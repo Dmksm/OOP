@@ -12,7 +12,7 @@ public:
 	bool IsTurnedOn() const;
 	std::string GetDirection() const;
 	int GetSpeed() const;
-	int GetGear() const;
+	unsigned GetGear() const;
 
 private:
 	using SpeedForGear = std::map<int, std::pair<int, int>>;;

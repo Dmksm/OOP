@@ -2,7 +2,6 @@
 #include "CDate.h"
 
 using namespace std;
-using namespace std::placeholders;
 
 CController::CController(CDate& date, std::istream& input, std::ostream& output)
 	: m_date(date)
