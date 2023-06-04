@@ -107,10 +107,12 @@ unsigned GetLeapYearDayCount(unsigned day)
 		++leapYearDayCount;
 		day -= FIRST_LEAP_YEAR_DAY - 1;
 
-		leapYearDayCount += LEAP_YEARS_NUMBER_IN_400_YEARS * ((unsigned)day / ToTimestamp(1, Month::JANUARY, 1970 + 400));
+		leapYearDayCount += LEAP_YEARS_NUMBER_IN_400_YEARS * 
+			((unsigned)day / ToTimestamp(1, Month::JANUARY, 1970 + 400));
 		day %= ToTimestamp(1, Month::JANUARY, 1970 + 400);
 
-		leapYearDayCount += LEAP_YEARS_NUMBER_IN_100_YEARS * ((unsigned)day / ToTimestamp(1, Month::JANUARY, 1970 + 100));
+		leapYearDayCount += LEAP_YEARS_NUMBER_IN_100_YEARS * 
+			((unsigned)day / ToTimestamp(1, Month::JANUARY, 1970 + 100));
 		day %= ToTimestamp(1, Month::JANUARY, 1970 + 100);
 
 		leapYearDayCount += (unsigned)day / ToTimestamp(1, Month::JANUARY, 1970 + 4);
@@ -133,7 +135,7 @@ DWMY FromTimestamp(unsigned day)
 	unsigned nowTimestampYear = day - ToTimestamp(1, Month::JANUARY, nowYear);
 
 	bool isLeapYear = ÑheckLeapYear(nowYear);
-	unsigned timestamp = 0;
+	unsigned timestamp = 0; //  âìåñòî now current
 	unsigned nowDay = 0, nowMonth = 0;
 	for (; nowMonth < 12; nowMonth++)
 	{

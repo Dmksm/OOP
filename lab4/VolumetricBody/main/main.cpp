@@ -1,4 +1,4 @@
-﻿#include "CRemoteControl.h"
+﻿#include "CController.h"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ struct Convert
 int main()
 {
 	vector<shared_ptr<CBody>> bodies;
-	CRemoteControl remoteControl(bodies, cin, cout);
+	CController remoteControl(bodies, cin, cout);
 
 	while (!cin.eof() && !cin.fail())
 	{

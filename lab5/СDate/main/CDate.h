@@ -48,7 +48,7 @@ public:
 
 	bool operator==(const CDate& Date) const;
 
-	std::strong_ordering operator<=>(const CDate& date) const;
+	std::strong_ordering operator<=>(const CDate& date) const; //заменить на = default
 
 	unsigned GetDay() const;
 
@@ -58,7 +58,7 @@ public:
 
 	WeekDay GetWeekDay() const;
 	
-	CDate operator+(long int day) const;
+	CDate operator+(long int day) const; //сделать возможность складывать дни с датой 
 
 	CDate operator-(long int day) const;
 

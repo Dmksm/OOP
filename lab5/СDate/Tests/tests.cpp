@@ -20,7 +20,8 @@ SCENARIO("Init Date")
 			REQUIRE(date.GetYear() == 1970);
 
 			CDate date2(29, Month::FEBRUARY, 1972);
-			REQUIRE(typeid(date2.GetDay()) == typeid(unsigned));
+			REQUIRE(typeid(date2.GetDay()) == typeid(unsigned)); //статическая типизация не нуэно проверять тип снова, 
+			// для проверка типва использвать static_assert и std::is_same_v
 			REQUIRE(typeid(date2.GetMonth()) == typeid(Month));
 			REQUIRE(typeid(date2.GetWeekDay()) == typeid(WeekDay));
 			REQUIRE(typeid(date2.GetYear()) == typeid(unsigned));
@@ -112,6 +113,14 @@ SCENARIO("Changing leap date")
 
 				date++;
 				REQUIRE((date == leapDate));
+			}
+		} 
+		WHEN("Is Mondey")
+		{
+			THEN("Get Mondey")
+			{
+				CDate date(29, Month::MAY, 2023);
+				REQUIRE(date.GetWeekDay() == WeekDay::MONDAY);
 			}
 		}
 	}
