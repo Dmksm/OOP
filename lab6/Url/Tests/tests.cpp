@@ -1,13 +1,14 @@
 #define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 #include "../main/CHttpUrl.h"
+#include "../main/CUrlParsingError.h" 
 
 SCENARIO("Entering url")
 {
 	WHEN("Entering url without port")
 	{
 		CHttpUrl url("https://learn.microsoft.com/ru-ru/cpp/cpp/cdecl?view=msvc-170");
-		THEN("")
+		THEN("Normal url parsing")
 		{
 			REQUIRE(url.GetUrl() == "https://learn.microsoft.com/ru-ru/cpp/cpp/cdecl");
 			REQUIRE(url.GetDocument() == "/ru-ru/cpp/cpp/cdecl");
@@ -20,7 +21,7 @@ SCENARIO("Entering url")
 	{
 		CHttpUrl urlWithSlash("http://translate.yandex.ru:8900/?page=1");
 		CHttpUrl url("http://translate.yandex.ru:789");
-		THEN("")
+		THEN("Normal url parsing")
 		{
 			REQUIRE(urlWithSlash.GetUrl() == "http://translate.yandex.ru:8900/");
 			REQUIRE(urlWithSlash.GetDocument() == "/");
@@ -38,7 +39,7 @@ SCENARIO("Entering url")
 	WHEN("Entering url without port and document")
 	{
 		CHttpUrl url("https://en.wikipedia.org");
-		THEN("")
+		THEN("Normal url parsing")
 		{
 			REQUIRE(url.GetUrl() == "https://en.wikipedia.org/");
 			REQUIRE(url.GetDocument() == "/");
@@ -50,7 +51,7 @@ SCENARIO("Entering url")
 	WHEN("Entering url with domain, document, protocol and port")
 	{
 		CHttpUrl url("en.wikipedia.org", "w/index.php", Protocol::HTTPS, 1789);
-		THEN("")
+		THEN("Normal url parsing")
 		{
 			REQUIRE(url.GetUrl() == "https://en.wikipedia.org:1789/w/index.php");
 			REQUIRE(url.GetDocument() == "/w/index.php");
@@ -58,5 +59,5 @@ SCENARIO("Entering url")
 			REQUIRE(url.GetPort() == 1789);
 			REQUIRE(url.GetProtocol() == Protocol::HTTPS);
 		}
-	}
+	} //проверить валидацию протокола на исключение, мин порт макс порт в 3 конструкторах
 }

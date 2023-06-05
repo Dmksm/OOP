@@ -49,7 +49,7 @@ std::string ToHttpUrl(
 void CutProtocolFromUrlAndPasteItIntoComponents(UrlComponents& urlComponents, std::string& url)
 {
 	size_t endPos = url.find("://");
-	std::string protocol = url.substr(0, endPos);
+	std::string protocol = url.substr(0, endPos); //можно сильно упростить с использованием регулярки
 	Protocol formatedProtocol;
 
 	if (protocol == "http")

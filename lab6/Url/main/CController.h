@@ -3,7 +3,7 @@
 
 class CHttpUrl;
 
-class CController
+class CController //здесь можно не делать диалог с пользователем, лучше работу с пользователем под контректуню задачу делать а расширяемость лучше для класса больше уделить ему внимание
 {
 public:
 	CController(std::vector<CHttpUrl> url, std::istream& input, std::ostream& output);

@@ -1,15 +1,12 @@
 #pragma once
 
 #include "stdafx.h"
-#include "CUrlParsingError.h"
 
 enum class Protocol
 {
 	HTTP,
 	HTTPS
 };
-
-class CUrlParsingError;
 
 class CHttpUrl
 {

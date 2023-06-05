@@ -1,5 +1,6 @@
 #include "CController.h"
 #include "CHttpUrl.h"
+#include "CUrlParsingError.h"
 
 using namespace std;
 using namespace std::placeholders;
