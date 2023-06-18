@@ -13,7 +13,6 @@ SCENARIO("Entering url")
 		CMyArray<char> chArr;
 		CMyArray<std::string> stringArr;
 
-		
 		REQUIRE(intArrList.GetSize() == 0);
 		REQUIRE(intArrList.GetCapacity() == 0);
 		intArr.Append(999);
@@ -24,6 +23,9 @@ SCENARIO("Entering url")
 		chArr.Append(ch);
 		std::string msg = "My array is the best!";
 		stringArr.Append(msg);
+
+		stringArr.Resize(100);
+		REQUIRE(stringArr[99] == "");
 
 		WHEN("Push back element")
 		{
@@ -115,6 +117,11 @@ SCENARIO("Entering url")
 				myIntArr.Append(3.45f);
 				REQUIRE(*(myIntArr.begin()) == 0.2f);
 				REQUIRE(*(myIntArr.begin() + 1) == 3.45f);
+				REQUIRE(*(myIntArr.end()) == 3.45f);
+				REQUIRE(*(myIntArr.end() + -1) == 0.2f);
+
+				REQUIRE(*(myIntArr.rend()) == 0.2f);
+				REQUIRE(*(myIntArr.rbegin()) == 3.45f);
 			}
 		}
 	}

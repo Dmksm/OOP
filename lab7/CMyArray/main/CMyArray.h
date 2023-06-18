@@ -2,7 +2,6 @@
 
 #include "stdafx.h"
 
-
 template <typename T>
 class CMyArray
 {
@@ -86,16 +85,15 @@ public:
 			try
 			{
 				CopyItems(arr.m_begin, arr.m_end, newBegin, newEnd);
-				// Конструируем копию value по адресу newItemLocation
 			}
 			catch (...)
 			{
 				DeleteItems(newBegin, newEnd);
 				throw;
 			}
-			// Переключаемся на использование нового хранилища элементов
-			m_begin = newBegin;
-			m_end = newEnd;
+			DeleteItems(m_begin, m_end);
+			m_begin = newBegin; //утечка памяти так как может быть this не пустым а мы тут присваиваем 
+			m_end = newEnd; //в тестах создать спец классф для проверки исключений итд
 			m_endOfCapacity = m_begin + newCapacity;
 		}
 		
@@ -123,9 +121,9 @@ public:
 		m_end = m_begin;
 	}
 	
-	void Resize(size_t size, const T& value)
+	void Resize(size_t size, const T& value) 
 	{
-		if (size < 0)
+		if (size < 0) //излишнее условие 
 		{
 			throw std::invalid_argument("size for resize must be positive or zero");
 		}
@@ -135,7 +133,7 @@ public:
 			return;
 		}
 
-		size_t currSize = this->GetSize();
+		size_t currSize = GetSize();
 		if (size != currSize)
 		{
 			if (size < currSize)
@@ -145,7 +143,7 @@ public:
 			}
 			else
 			{
-				while (size > currSize)
+				while (size > currSize) //убрать лишние действия постмотреть три ситуации мньше больше памяти хватает больше памяти не хватает 
 				{
 					--size;
 					Append(value);
@@ -156,7 +154,7 @@ public:
 
 	void Resize(size_t count)
 	{
-		Resize(count, 0);
+		Resize(count, T()); // подумать для  разных типов 
 	}
 
 	CMyArray() = default;
@@ -190,16 +188,15 @@ public:
 
 	void Append(const T& value)
 	{
-		if (m_end == m_endOfCapacity) // no free space
+		if (m_end == m_endOfCapacity)
 		{
 			size_t newCapacity = std::max(size_t(1), GetCapacity() * 2);
 
 			auto newBegin = RawAlloc(newCapacity);
 			T* newEnd = newBegin;
 			try
-			{
+			{ //улучшить : если у объекты имеют move конструктор не бросающий исключений то нужно не копировать а перемещать 
 				CopyItems(m_begin, m_end, newBegin, newEnd);
-				// Конструируем копию value по адресу newItemLocation
 				new (newEnd) T(value);
 				++newEnd;
 			}
@@ -210,12 +207,11 @@ public:
 			}
 			DeleteItems(m_begin, m_end);
 
-			// Переключаемся на использование нового хранилища элементов
 			m_begin = newBegin;
 			m_end = newEnd;
 			m_endOfCapacity = m_begin + newCapacity;
 		}
-		else // has free space
+		else
 		{
 			new (m_end) T(value);
 			++m_end;
@@ -277,6 +273,26 @@ public:
 		return { m_end - 1};
 	}
 
+	iterator rbegin()
+	{
+		return { m_end - 1 };
+	}
+
+	const_iterator rbegin() const
+	{
+		return { m_end - 1};
+	}
+
+	iterator rend()
+	{
+		return { m_begin };
+	}
+
+	const_iterator rend() const
+	{
+		return { m_begin };
+	}
+
 	const_iterator cbegin() const
 	{
 		return { m_begin };
@@ -285,31 +301,24 @@ public:
 private:
 	static void DeleteItems(T* begin, T* end)
 	{
-		// Разрушаем старые элементы
 		DestroyItems(begin, end);
 		
-		// Освобождаем область памяти для их хранения
 		RawDealloc(begin);
 	}
 
-	// Копирует элементы из текущего вектора в to, возвращает newEnd
 	static void CopyItems(const T* srcBegin, T* srcEnd, T* const dstBegin, T*& dstEnd)
 	{
 		for (dstEnd = dstBegin; srcBegin != srcEnd; ++srcBegin, ++dstEnd)
 		{
-			// Construct "T" at "dstEnd" as a copy of "*begin"
 			new (dstEnd) T(*srcBegin);
 		}
 	}
 
 	static void DestroyItems(T* from, T* to)
 	{
-		// dst - адрес объект, при конструирование которого было выброшено исключение
-		// to - первый скорнструированный объект
 		while (to != from)
 		{
 			--to;
-			// явно вызываем деструктор для шаблонного типа T
 			to->~T();
 		}
 	}
